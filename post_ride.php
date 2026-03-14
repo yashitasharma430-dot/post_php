@@ -1,83 +1,60 @@
 <?php
-session_start();
+
 $conn = new mysqli("localhost","root","","confidential");
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
 
 $from = $_POST['from_location'];
 $to = $_POST['to_location'];
-$date = $_POST['ride_date'];
+$date = $_POST['date'];
 $contact = $_POST['contact'];
-$user = $_SESSION['user'];
+$email = $_POST['posted_by'];
+$seats = $_POST['seats_left'];
 
-$sql = "INSERT INTO rides(from_location,to_location,ride_date,contact,posted_by)
-VALUES('$from','$to','$date','$contact','$user')";
+$conn->query("INSERT INTO rides (from_location,to_location,ride_date,contact,posted_by,seats_left)
+VALUES ('$from','$to','$date','$contact','$email','$seats')");
 
-$conn->query($sql);
-
-echo "<script>alert('Ride posted successfully');</script>";
+/* redirect to rides page */
+header("Location: view_rides.php");
+exit();
 }
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-<title>Post Travel Ride</title>
+<title>Post a Ride</title>
 
 <style>
 
 body{
-font-family: Arial;
+font-family:Arial;
 background:#f4f4f4;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
+padding:40px;
 }
 
-.box{
+form{
 background:white;
-padding:30px;
-border-radius:12px;
-box-shadow:0 0 15px rgba(0,0,0,0.15);
-width:350px;
-text-align:center;
-}
-
-h2{
-margin-bottom:20px;
+padding:20px;
+border-radius:10px;
+width:400px;
+margin:auto;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 input{
 width:100%;
-padding:10px;
-margin:10px 0;
-border:1px solid #ccc;
-border-radius:6px;
-font-size:14px;
+padding:8px;
+margin:8px 0;
 }
 
 button{
-width:100%;
-padding:12px;
-background:#1a73e8;
+background:#28a745;
 color:white;
+padding:10px;
 border:none;
-border-radius:8px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#0f5ed7;
-}
-
-.back{
-display:block;
-margin-top:15px;
-color:#1a73e8;
-text-decoration:none;
+width:100%;
+border-radius:6px;
 }
 
 </style>
@@ -86,27 +63,31 @@ text-decoration:none;
 
 <body>
 
-<div class="box">
-
-<h2>Post Travel Ride</h2>
+<h2 style="text-align:center;">Post a Ride</h2>
 
 <form method="POST">
 
-<input type="text" name="from_location" placeholder="From location" required>
+From:
+<input type="text" name="from_location" required>
 
-<input type="text" name="to_location" placeholder="To location" required>
+To:
+<input type="text" name="to_location" required>
 
-<input type="date" name="ride_date" required>
+Date:
+<input type="date" name="date" required>
 
-<input type="text" name="contact" placeholder="Contact number / email">
+Contact:
+<input type="text" name="contact" required>
 
-<button type="submit">Submit</button>
+Email:
+<input type="email" name="posted_by" required>
+
+Seats Available:
+<input type="number" name="seats_left" min="1" max="15" required>
+
+<button type="submit">Post Ride</button>
 
 </form>
-
-<a class="back" href="dashboard.php">← Back to Dashboard</a>
-
-</div>
 
 </body>
 </html>
