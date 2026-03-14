@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 $conn = new mysqli("localhost","root","","confidential");
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
@@ -7,15 +7,16 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 $title = $_POST['title'];
 $description = $_POST['description'];
 $location = $_POST['location'];
-$user = $_SESSION['user'];
+$email = $_POST['posted_by'];
 
-$sql = "INSERT INTO lost_items(title,description,location,posted_by)
-VALUES('$title','$description','$location','$user')";
+$conn->query("INSERT INTO lost_items (title,description,location,posted_by)
+VALUES ('$title','$description','$location','$email')");
 
-$conn->query($sql);
-
-echo "<script>alert('Item posted successfully');</script>";
+/* redirect to lost items page */
+header("Location: view_lost.php");
+exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -26,91 +27,60 @@ echo "<script>alert('Item posted successfully');</script>";
 <style>
 
 body{
-font-family: Arial;
+font-family:Arial;
 background:#f4f4f4;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
+padding:40px;
 }
 
-.box{
+form{
 background:white;
-padding:30px;
-border-radius:12px;
-box-shadow:0 0 15px rgba(0,0,0,0.15);
-width:350px;
-text-align:center;
+padding:20px;
+border-radius:10px;
+width:400px;
+margin:auto;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-h2{
-margin-bottom:20px;
-}
-
-input, textarea{
+input,textarea{
 width:100%;
-padding:10px;
-margin:10px 0;
-border:1px solid #ccc;
-border-radius:6px;
-font-size:14px;
-}
-
-textarea{
-height:80px;
-resize:none;
+padding:8px;
+margin:8px 0;
 }
 
 button{
-width:100%;
-padding:12px;
-background:#1a73e8;
+background:#e53935;
 color:white;
+padding:10px;
 border:none;
-border-radius:8px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#0f5ed7;
-}
-
-.back{
-display:block;
-margin-top:15px;
-color:#1a73e8;
-text-decoration:none;
+width:100%;
+border-radius:6px;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div class="box">
-
-<h2>Post Lost Item</h2>
+<h2 style="text-align:center;">Post Lost Item</h2>
 
 <form method="POST">
 
-<input type="text" name="title" placeholder="Item name" required>
+Item Name:
+<input type="text" name="title" required>
 
-<textarea name="description" placeholder="Description"></textarea>
+Description:
+<textarea name="description" required></textarea>
 
-<input type="text" name="location" placeholder="Location found">
+<!-- Changed label -->
+Location Lost:
+<input type="text" name="location" required>
 
-<input type="number" name="contact" placeholder="Contact number">
+Email:
+<input type="email" name="posted_by" required>
 
-<button type="submit">Submit</button>
+<button type="submit">Post Lost Item</button>
 
 </form>
-
-<a class="back" href="dashboard.php">← Back to Dashboard</a>
-
-</div>
 
 </body>
 </html>
